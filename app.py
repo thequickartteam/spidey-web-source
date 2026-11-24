@@ -464,6 +464,107 @@ def api_zip(token):
     )
 
 
+@app.route('/ai')
+def puter():
+    return Response(PUTER_AI, mimetype='text/html')
+
+PUTER_AI = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Puter.js AI Chat</title>
+  <script src="https://puter.com"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; background: #f9fafb; }
+    #chat-box { height: 450px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; background: #fff; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .msg { padding: 0.75rem 1rem; border-radius: 8px; max-width: 80%; line-height: 1.5; white-space: pre-wrap; }
+    .user { background: #2563eb; color: #fff; align-self: flex-end; }
+    .assistant { background: #f3f4f6; color: #111827; align-self: flex-start; }
+    .controls { display: flex; gap: 0.5rem; }
+    select, input, button { padding: 0.6rem; border-radius: 6px; border: 1px solid #d1d5db; font-size: 1rem; }
+    input { flex: 1; }
+    button { background: #2563eb; color: #fff; border: none; cursor: pointer; font-weight: 500; }
+    button:disabled { background: #93c5fd; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <h2>AI Chat (Powered by Puter.js)</h2>
+  <div id="chat-box"></div>
+
+  <div class="controls">
+    <select id="model">
+      <option value="gpt-4o-mini">GPT-4o Mini</option>
+      <option value="claude-sonnet-4">Claude Sonnet</option>
+      <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+    </select>
+    <input type="text" id="prompt" placeholder="Type your message..." />
+    <button id="send-btn">Send</button>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const promptInput = document.getElementById('prompt');
+    const sendBtn = document.getElementById('send-btn');
+    const modelSelect = document.getElementById('model');
+    const messages = [];
+
+    function appendMessage(role, text = '') {
+      const div = document.createElement('div');
+      div.className = `msg ${role}`;
+      div.textContent = text;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return div;
+    }
+
+    async function sendMessage() {
+      const text = promptInput.value.trim();
+      if (!text) return;
+
+      appendMessage('user', text);
+      messages.push({ role: 'user', content: text });
+      promptInput.value = '';
+      sendBtn.disabled = true;
+
+      const aiDiv = appendMessage('assistant', 'Thinking...');
+
+      try {
+        const response = await puter.ai.chat(messages, {
+          model: modelSelect.value,
+          stream: true
+        });
+
+        aiDiv.textContent = '';
+        let fullReply = '';
+
+        for await (const part of response) {
+          if (part?.text) {
+            fullReply += part.text;
+            aiDiv.textContent = fullReply;
+            chatBox.scrollTop = chatBox.scrollHeight;
+          }
+        }
+
+        messages.push({ role: 'assistant', content: fullReply });
+      } catch (err) {
+        aiDiv.textContent = `Error: ${err.message || 'Failed to get response.'}`;
+      } finally {
+        sendBtn.disabled = false;
+        promptInput.focus();
+      }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    promptInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+  </script>
+</body>
+</html>"""
+
+
 @app.route('/')
 def index():
     return Response(INDEX_HTML, mimetype='text/html')
