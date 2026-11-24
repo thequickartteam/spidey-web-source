@@ -468,101 +468,33 @@ def api_zip(token):
 def puter():
     return Response(PUTER_AI, mimetype='text/html')
 
-PUTER_AI = """<!DOCTYPE html>
+PUTER_AI = """<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Puter.js AI Chat</title>
-  <script src="https://puter.com"></script>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 700px; margin: 2rem auto; padding: 0 1rem; background: #f9fafb; }
-    #chat-box { height: 450px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; background: #fff; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
-    .msg { padding: 0.75rem 1rem; border-radius: 8px; max-width: 80%; line-height: 1.5; white-space: pre-wrap; }
-    .user { background: #2563eb; color: #fff; align-self: flex-end; }
-    .assistant { background: #f3f4f6; color: #111827; align-self: flex-start; }
-    .controls { display: flex; gap: 0.5rem; }
-    select, input, button { padding: 0.6rem; border-radius: 6px; border: 1px solid #d1d5db; font-size: 1rem; }
-    input { flex: 1; }
-    button { background: #2563eb; color: #fff; border: none; cursor: pointer; font-weight: 500; }
-    button:disabled { background: #93c5fd; cursor: not-allowed; }
-  </style>
-</head>
-<body>
-
-  <h2>AI Chat (Powered by Puter.js)</h2>
-  <div id="chat-box"></div>
-
-  <div class="controls">
-    <select id="model">
-      <option value="gpt-4o-mini">GPT-4o Mini</option>
-      <option value="claude-sonnet-4">Claude Sonnet</option>
-      <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-    </select>
-    <input type="text" id="prompt" placeholder="Type your message..." />
-    <button id="send-btn">Send</button>
-  </div>
-
-  <script>
-    const chatBox = document.getElementById('chat-box');
-    const promptInput = document.getElementById('prompt');
-    const sendBtn = document.getElementById('send-btn');
-    const modelSelect = document.getElementById('model');
-    const messages = [];
-
-    function appendMessage(role, text = '') {
-      const div = document.createElement('div');
-      div.className = `msg ${role}`;
-      div.textContent = text;
-      chatBox.appendChild(div);
-      chatBox.scrollTop = chatBox.scrollHeight;
-      return div;
-    }
-
-    async function sendMessage() {
-      const text = promptInput.value.trim();
-      if (!text) return;
-
-      appendMessage('user', text);
-      messages.push({ role: 'user', content: text });
-      promptInput.value = '';
-      sendBtn.disabled = true;
-
-      const aiDiv = appendMessage('assistant', 'Thinking...');
-
-      try {
-        const response = await puter.ai.chat(messages, {
-          model: modelSelect.value,
-          stream: true
-        });
-
-        aiDiv.textContent = '';
-        let fullReply = '';
-
-        for await (const part of response) {
-          if (part?.text) {
-            fullReply += part.text;
-            aiDiv.textContent = fullReply;
-            chatBox.scrollTop = chatBox.scrollHeight;
-          }
-        }
-
-        messages.push({ role: 'assistant', content: fullReply });
-      } catch (err) {
-        aiDiv.textContent = `Error: ${err.message || 'Failed to get response.'}`;
-      } finally {
-        sendBtn.disabled = false;
-        promptInput.focus();
-      }
-    }
-
-    sendBtn.addEventListener('click', sendMessage);
-    promptInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') sendMessage();
-    });
-  </script>
-</body>
-</html>"""
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Public LLM API Raw Response Viewer</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#121a2d;--line:#27334e;--text:#e8edf8;--muted:#9ba9c5;--accent:#77a7ff;--green:#8ee0bd;--red:#ff9d9d}*{box-sizing:border-box}body{margin:0;background:radial-gradient(1100px 600px at 70% -10%,#1e3157 0,transparent 60%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}.wrap{max-width:1050px;margin:36px auto;padding:0 18px}h1{font-size:clamp(24px,4vw,36px);margin:0 0 6px}.sub{color:var(--muted);margin:0 0 24px}.card{background:color-mix(in srgb,var(--panel) 94%,transparent);border:1px solid var(--line);border-radius:14px;padding:20px;margin:14px 0;box-shadow:0 12px 35px #0003}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:700px){.grid{grid-template-columns:1fr}}label{display:block;font-size:13px;color:var(--muted);font-weight:650;margin:0 0 7px}textarea,input,select{font:inherit;color:var(--text);background:#0b1222;border:1px solid #34415e;border-radius:9px;padding:11px 12px;width:100%;outline:none}textarea:focus,input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #77a7ff22}textarea{min-height:110px;resize:vertical}#prompt{min-height:130px}.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}button{border:0;border-radius:9px;background:var(--accent);color:#071225;font-weight:750;padding:10px 15px;cursor:pointer}button.secondary{background:#273651;color:var(--text)}button:disabled{opacity:.55;cursor:wait}.status{font-size:13px;color:var(--muted)}.status.ok{color:var(--green)}.status.err{color:var(--red)}.small{font-size:12px;color:var(--muted)}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#080d18;border:1px solid #202b41;border-radius:9px;padding:14px;min-height:100px;max-height:560px;overflow:auto;font:12.5px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}.bar h2{font-size:17px;margin:0}.tag{border:1px solid var(--line);border-radius:999px;padding:3px 9px;color:var(--muted);font-size:12px}.endpoint{font:12px ui-monospace,monospace;color:#b7c7e6;overflow-wrap:anywhere;margin:6px 0 12px}.hint{margin-top:12px;color:var(--muted);font-size:12px}a{color:#a9c5ff}
+</style></head><body><main class="wrap">
+<h1>Public LLM API · Raw Response Viewer</h1><p class="sub">Send the same prompt to each public endpoint and inspect its unmodified response body.</p>
+<section class="card"><div class="grid"><div><label for="prompt">Prompt</label><textarea id="prompt">Explain in one short paragraph how a rainbow forms.</textarea></div><div><label for="system">System message (optional)</label><textarea id="system" placeholder="You are a helpful assistant."></textarea><div class="hint">Responses are displayed as received; JSON bodies are pretty-printed for readability. No API keys are used.</div></div></div><div class="controls"><button id="send">Call all endpoints</button><button class="secondary" id="clear">Clear output</button><span class="status" id="globalStatus">Ready</span></div></section>
+<div class="grid">
+<section class="card"><div class="bar"><h2>Pollinations Text</h2><span class="tag">No auth</span></div><div class="endpoint">POST https://text.pollinations.ai/</div><label for="pollModel">Model</label><input id="pollModel" value="openai" aria-label="Pollinations model"><div class="bar" style="margin-top:16px"><span class="status" id="pollStatus">Not called</span><button class="secondary copy" data-target="pollOut">Copy</button></div><pre id="pollOut">Waiting for request…</pre></section>
+<section class="card"><div class="bar"><h2>LLM7.io</h2><span class="tag">No key · turbo</span></div><div class="endpoint">POST https://api.llm7.io/v1/chat/completions</div><label for="llm7Model">Model</label><input id="llm7Model" value="turbo" aria-label="LLM7 model"><div class="bar" style="margin-top:16px"><span class="status" id="llm7Status">Not called</span><button class="secondary copy" data-target="llm7Out">Copy</button></div><pre id="llm7Out">Waiting for request…</pre></section>
+<section class="card"><div class="bar"><h2>Kilo Code Gateway</h2><span class="tag">No key</span></div><div class="endpoint">POST https://api.kilo.ai/api/gateway, OpenAI-compatible</div><label for="kiloModel">Model</label><input id="kiloModel" value="kilo-auto/free" aria-label="Kilo model"><div class="bar" style="margin-top:16px"><span class="status" id="kiloStatus">Not called</span><button class="secondary copy" data-target="kiloOut">Copy</button></div><pre id="kiloOut">Waiting for request…</pre></section>
+</div><p class="small">Note: these are third-party public services. Availability, model names, CORS permissions, and usage policies may change. Browser requests can fail if an endpoint does not allow cross-origin access.</p>
+</main><script>
+const $=id=>document.getElementById(id);const endpoints=[
+{id:'poll',name:'Pollinations Text',url:'https://text.pollinations.ai/',out:'pollOut',status:'pollStatus',run:async(prompt,system)=>{const messages=[];if(system)messages.push({role:'system',content:system});messages.push({role:'user',content:prompt});const r=await fetch('https://text.pollinations.ai/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages,model:$('pollModel').value.trim()||'openai'})});return r}},
+{id:'llm7',name:'LLM7.io',url:'https://api.llm7.io/v1/chat/completions',out:'llm7Out',status:'llm7Status',run:async(prompt,system)=>{const messages=[];if(system)messages.push({role:'system',content:system});messages.push({role:'user',content:prompt});return fetch('https://api.llm7.io/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:$('llm7Model').value.trim()||'turbo',messages,stream:false})})}},
+{id:'kilo',name:'Kilo Code Gateway',url:'https://api.kilo.ai/api/gateway',out:'kiloOut',status:'kiloStatus',run:async(prompt,system)=>{const messages=[];if(system)messages.push({role:'system',content:system});messages.push({role:'user',content:prompt});return fetch('https://api.kilo.ai/api/gateway',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:$('kiloModel').value.trim()||'kilo-auto/free',messages,stream:false})})}}
+];
+function showRaw(text){try{return JSON.stringify(JSON.parse(text),null,2)}catch{return text||'(empty response body)'}}
+async function call(ep,prompt,system){const out=$(ep.out),st=$(ep.status);st.className='status';st.textContent='Requesting…';out.textContent='Loading…';try{const response=await ep.run(prompt,system);const raw=await response.text();out.textContent=`HTTP ${response.status} ${response.statusText}\n\n${showRaw(raw)}`;st.className='status '+(response.ok?'ok':'err');st.textContent=response.ok?'Complete':`HTTP ${response.status}`}catch(e){out.textContent=`Request failed: ${e.name||'Error'}: ${e.message}\n\nThis may be a network, CORS, or endpoint availability issue.`;st.className='status err';st.textContent='Failed'}}
+$('send').addEventListener('click',async()=>{const prompt=$('prompt').value.trim();if(!prompt){$('globalStatus').className='status err';$('globalStatus').textContent='Enter a prompt first.';return}const button=$('send');button.disabled=true;$('globalStatus').className='status';$('globalStatus').textContent='Calling endpoints…';await Promise.all(endpoints.map(e=>call(e,prompt,$('system').value.trim())));button.disabled=false;$('globalStatus').className='status ok';$('globalStatus').textContent='All requests finished.'});
+$('clear').addEventListener('click',()=>{for(const e of endpoints){$(e.out).textContent='Waiting for request…';$(e.status).className='status';$(e.status).textContent='Not called'}$('globalStatus').className='status';$('globalStatus').textContent='Ready'});
+document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{const text=$(b.dataset.target).textContent;try{await navigator.clipboard.writeText(text);b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1200)}catch{b.textContent='Copy failed';setTimeout(()=>b.textContent='Copy',1200)}}));
+</script></body></html>"""
 
 
 @app.route('/')
