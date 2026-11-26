@@ -468,306 +468,162 @@ def api_zip(token):
 def puter():
     return Response(PUTER_AI, mimetype='text/html')
 
-PUTER_AI = """<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pollinations Model Playground</title>
-<style>
-:root{color-scheme:dark;--bg:#0a1020;--panel:#121b30;--line:#2a3855;--text:#eaf0ff;--muted:#9eacc7;--accent:#83adff;--green:#8ce0b6;--red:#ff9b9b}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(1000px 550px at 75% -10%,#20355f,transparent 62%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
-.wrap{max-width:1150px;margin:30px auto;padding:0 16px}
-h1{font-size:clamp(24px,4vw,34px);margin:0}.sub,.muted,.hint{color:var(--muted)}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin:14px 0}
-.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.tabs{display:flex;gap:8px;margin-bottom:14px}
-.tab,button{border:0;border-radius:9px;padding:10px 14px;font:inherit;font-weight:700;cursor:pointer}
-.tab{background:#202d47;color:var(--text)}.tab.active,button.primary{background:var(--accent);color:#071225}
-button.secondary{background:#253450;color:var(--text)}button:disabled{opacity:.55;cursor:wait}
-label{display:block;color:var(--muted);font-size:13px;font-weight:650;margin:0 0 6px}
-textarea,input[type=text],input[type=number],input[type=search],select{font:inherit;color:var(--text);background:#091222;border:1px solid #34425e;border-radius:9px;padding:11px;width:100%}
-textarea{min-height:120px;resize:vertical}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:720px){.grid{grid-template-columns:1fr}}
-.field{flex:1;min-width:200px}
-.modeBox{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:14px}
-.modeBox label{margin:0;color:var(--text);font-size:14px}
-.modelToolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0}
-.modelToolbar input[type=search]{max-width:280px;padding:8px 11px}
-.modelList{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:8px;max-height:320px;overflow:auto}
-.model{display:flex;gap:8px;align-items:center;background:#0b1425;border:1px solid #283651;border-radius:8px;padding:8px;font-size:13px;cursor:pointer;overflow-wrap:anywhere}
-.model:hover{border-color:var(--accent)}
-.model.sel{border-color:var(--accent);background:#10203c}
-.model input{width:auto;accent-color:var(--accent)}
-.status{font-size:13px;color:var(--muted)}.ok{color:var(--green)}.err{color:var(--red)}
-.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:12px}
-.result{background:#0b1425;border:1px solid var(--line);border-radius:11px;padding:13px;min-width:0}
-.resultHead{display:flex;justify-content:space-between;gap:10px;align-items:center}
-.result h3{font-size:14px;margin:0;overflow-wrap:anywhere}
-.result pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:440px;overflow:auto;font:12.5px/1.55 ui-monospace,monospace;color:#d8e3fb;margin:10px 0 0}
-.result img{max-width:100%;border-radius:8px;margin-top:10px}
-.badge{font-size:11px;border:1px solid var(--line);border-radius:99px;padding:2px 8px;color:var(--muted);white-space:nowrap}
-.badge.ok{color:var(--green);border-color:var(--green)}.badge.err{color:var(--red);border-color:var(--red)}
-.hidden{display:none}.hint{font-size:12px;margin-top:8px}
-a{color:#adc8ff}.linkBtn{background:none;border:0;color:#adc8ff;cursor:pointer;font-size:12px;padding:0;font-weight:700}
-</style></head><body><main class="wrap">
-<h1>Pollinations Model Playground</h1>
-<p class="sub">Text &amp; image generation via Pollinations — run every model at once, or pick exactly one. All requests are POST, sent straight from your browser.</p>
+PUTER_AI = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minio Request Sender</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+        h2 { color: #569cd6; }
+        .input-group {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #2d2d2d;
+            color: #d4d4d4;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #0e639c;
+            color: white;
+            border: 1px solid #1177bb;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        button:hover { background-color: #1177bb; }
+        button:disabled { background-color: #3c3c3c; border-color: #3c3c3c; cursor: not-allowed; }
+        
+        .label { margin-bottom: 5px; color: #9cdcfe; }
+        
+        .output-container {
+            background-color: #1e1e1e;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 20px;
+            min-height: 200px;
+            overflow: auto;
+        }
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #ce9178;
+            font-family: Consolas, "Courier New", monospace;
+        }
+        .status { margin-top: 10px; font-weight: bold; }
+        .success { color: #4ec9b0; }
+        .error { color: #f44747; }
+        .note { font-size: 0.9em; color: #888; margin-top: 20px; line-height: 1.5; }
+    </style>
+</head>
+<body>
 
-<section class="card">
-  <div class="tabs">
-    <button class="tab active" data-category="text">📝 Text</button>
-    <button class="tab" data-category="image">🎨 Image</button>
-  </div>
-  <div class="grid">
-    <div><label for="prompt">Prompt</label><textarea id="prompt" placeholder="Write your prompt…">Explain briefly how a rainbow forms.</textarea></div>
-    <div id="systemWrap"><label for="system">System message <span class="muted">(optional, text only)</span></label>
-      <textarea id="system" placeholder="You are a helpful assistant."></textarea>
-      <div class="hint">Requests go directly from your browser to Pollinations. Availability, limits and CORS may vary.</div></div>
-    <div id="imageOptions" class="row hidden" style="align-items:flex-end">
-      <div class="field" style="max-width:220px"><label for="imageSize">Image size</label>
-        <select id="imageSize"><option value="1024x1024">1024 × 1024</option><option value="1024x768">1024 × 768</option><option value="768x1024">768 × 1024</option><option value="1280x720">1280 × 720</option></select></div>
-      <div class="hint" style="flex:1">Image models may take longer. Results show the image plus a download link.</div>
+    <h2>HTTP Request Sender</h2>
+    
+    <div class="label">Base URL (e.g., http://52.14.94.11:9000)</div>
+    <div class="input-group">
+        <input type="text" id="baseUrl" value="http://52.14.94.11:9000" placeholder="Enter Base URL here...">
+        <button id="sendBtn" onclick="sendRequest()">Send Request</button>
     </div>
-  </div>
 
-  <div class="row" style="margin-top:12px">
-    <div class="field" style="max-width:240px" id="maxTokensWrap"><label for="maxTokens">Max tokens</label>
-      <input id="maxTokens" type="number" min="16" step="16" value="1024"></div>
-  </div>
+    <div class="label">Target Endpoint: <strong>POST /minio/bootstrap/v1/verify</strong></div>
+    <div class="status" id="status"></div>
 
-  <div class="modeBox">
-    <strong>Call mode:</strong>
-    <label><input type="radio" name="callMode" value="all" checked> Call all models</label>
-    <label><input type="radio" name="callMode" value="single"> Call a single model</label>
-    <span id="modeHint" class="hint" style="margin:0"></span>
-  </div>
-
-  <div id="modelBox">
-    <div class="modelToolbar">
-      <input id="modelSearch" type="search" placeholder="Search models…">
-      <button id="selectAll" class="secondary" type="button">Select all</button>
-      <button id="selectNone" class="secondary" type="button">Select none</button>
-      <span id="modelCount" class="status"></span>
+    <div class="label" style="margin-top: 15px;">Raw Response:</div>
+    <div class="output-container">
+        <pre id="responseOutput">Waiting for request...</pre>
     </div>
-    <div id="models" class="modelList"></div>
-  </div>
 
-  <div class="row" style="margin-top:15px">
-    <button class="primary" id="run">Run models ▶</button>
-    <button class="secondary" id="clear">Clear results</button>
-    <button class="secondary" id="stop" hidden>Stop ✕</button>
-    <span id="status" class="status">Loading Pollinations model catalogue…</span>
-  </div>
-</section>
+    <div class="note">
+        <strong>Note:</strong> Browsers restrict certain headers for security reasons. Headers like <code>Host</code>, <code>Connection</code>, <code>Accept-Encoding</code>, and <code>Upgrade-Insecure-Requests</code> cannot be manually set in a browser <code>fetch</code> request; the browser handles them automatically. 
+        <br><br>
+        If you receive a <strong>CORS error</strong>, the target server does not allow requests from web browsers. To bypass this, you would need to use a tool like cURL, Postman, or Burp Suite locally.
+    </div>
 
-<section class="card">
-  <div class="row" style="justify-content:space-between">
-    <h2 style="font-size:18px;margin:0">Results</h2><span id="resultSummary" class="status"></span>
-  </div>
-  <div id="results" class="results" style="margin-top:12px"></div>
-</section>
+    <script>
+        async function sendRequest() {
+            const baseUrl = document.getElementById('baseUrl').value.trim();
+            const endpoint = '/minio/bootstrap/v1/verify';
+            const statusDiv = document.getElementById('status');
+            const outputDiv = document.getElementById('responseOutput');
+            const sendBtn = document.getElementById('sendBtn');
 
-<p class="hint">Text API: <code>text.pollinations.ai</code> · Image API: <code>image.pollinations.ai</code> · <a href="https://enter.pollinations.ai/models" target="_blank" rel="noreferrer">Model catalogue</a> · Never put a private API key in a public HTML file.</p>
-</main>
+            if (!baseUrl) {
+                alert('Please enter a base URL.');
+                return;
+            }
 
-<script>
-(()=>{'use strict';
-const $=id=>document.getElementById(id);
-let category='text',catalog={text:[],image:[]},busy=false,stopFlag=false;
-const fallback={text:["openai/gpt-5.4-nano","thinkingmachines/inkling-2-mini","google/gemini-4-neon","openai/gpt-6.2-astra","openai/gpt-6.2-sol","qwen/qwen4-max","tencent/hy4-flash","google/gemini-4-hydrogen","google/gemini-4-carbon","anthropic/claude-fable-5.2","meta/muse-ember","openai/gpt-6.1-terra","meta/muse-spark-1.3","minimax/minimax-m3.1-flash","moonshotai/kimi-k3.1-pro","moonshotai/kimi-k3.1-pro-highspeed","inception/mercury-3","deepseek/deepseek-v4.1-flash-1017","meta/muse-spark-open","nvidia/nemotron-3.5-super-vl","google/gemini-4-argon","meta/muse-wonder-1.0","anthropic/claude-opus-5.5:fast","stepfun/step-5-preview","anthropic/claude-haiku-5.5","mistralai/mistral-large-4","nex-agi/nex-n2.5-mini","nex-agi/nex-n2.5-pro","inclusionai/ling-3.1-flash","inferenceport-ai/lightning-text-v2","inferenceport-ai/lightning-text-v2.1","openai/gpt-6.1-sol","anthropic/claude-sonnet-5.5","anthropic/claude-opus-5.5","openai/gpt-5.3-codex","openai/gpt-6-luna","openai/gpt-6-sol","xiaomi/mimo-v2.6-flash","xiaomi/mimo-v2.6-pro","x-ai/grok-4.7","inclusionai/ling-3.0-flash-vl","z-ai/glm-5.3-flashx","tencent/hy3","openai/gpt-4o-mini","tencent/hy4-preview","deepseek/deepseek-v4.1-flash","qwen/qwen3.8-flash","openai/gpt-6-astra","qwen/qwen3.8-max-0902","deepseek/deepseek-v4-flash-vision-exp","google/gemini-3.8-flash","anthropic/claude-fable-5.1","thinkingmachines/inkling","z-ai/glm-5.3-flash","nvidia/nemotron-3.5-lightning","z-ai/glm-5.3","qwen/qwen3.8-27b","meta/muse-glimmer-30b","meta/muse-spark-1.2","qwen/qwen3.8-2.4t-a95b","qwen/qwen3.8-max","thinkingmachines/inkling-small","cohere/command-a-plus","qwen/qwen3.7-flash","nvidia/nemotron-3-ultra","meituan/longcat-2.0","poolside/laguna-s-2.1","google/gemma-4-31b-it","moonshotai/kimi-k3","openai/gpt-oss-20b","qwen/qwen3.7-max","x-ai/grok-4.6","xiaomi/mimo-v2.5","openai/gpt-5.6-luna","openai/gpt-5.6-sol","openai/gpt-5.6-terra","anthropic/claude-sonnet-5","inception/mercury-2","moonshotai/kimi-k2.7-code","qwen/qwen3.7-plus","anthropic/claude-fable-5","minimax/minimax-m3","anthropic/claude-opus-5","stepfun/step-3.5-flash","stepfun/step-3.7-flash","x-ai/grok-4.3","google/gemini-3.7-flash","mistralai/mistral-small-4","openai/gpt-5.4-mini","qwen/qwen3-vl-235b-a22b-thinking","google/gemma-4-26b-a4b-it","meta/llama-4-maverick","meta/llama-4-scout","openai/gpt-5.5","meta/llama-3.3-70b-instruct","deepseek/deepseek-v4-pro","anthropic/claude-opus-4.7","moonshotai/kimi-k2.6","mistralai/mistral-large-3","google/gemini-3.5-flash-lite","openai/gpt-audio-1.5","amazon/nova-2-lite-v1","pollinations/midijourney-large","qwen/qwen3-coder-next","qwen/qwen3-vl-30b-a3b-instruct","qwen/qwen3guard-gen-8b","minimax/minimax-m2.7","z-ai/glm-5.2","google/gemini-2.5-flash-lite","anthropic/claude-haiku-4.5","google/gemini-3.1-pro-preview","anthropic/claude-opus-4.6","x-ai/grok-4.20","anthropic/claude-sonnet-4.6","perplexity/sonar","deepseek/deepseek-v4-flash","google/gemini-2.5-flash-lite:search","amazon/nova-micro-v1","google/gemini-3-flash-preview","mistralai/mistral-small-3.2","openai/gpt-5-nano","openai/gpt-5.4","openai/gpt-audio-mini","pollinations/midijourney","qwen/qwen3-coder-30b-a3b-instruct","stealth/glyph-cluster","community/pollinations-ai/floret","community/pollinations-ai/catgpt","community/pollinations-ai/opposite-prompt","community/chigwell/gpt-6.1-terra","community/chigwell/gpt-6-astra","community/Catniti/hy4-flash","community/sharktide/azure-nemotron-3-ultra:data-zone","community/sharktide/azure-gpt-5.4-nano","community/scriptsnsenses-sys/gpt-6-luna:free","community/Brybod123/bryllm-qwen35-08b","community/chigwell/minimax-m3","community/sharktide/azure-mistral-large-4:azure:data-zone","community/Catniti/qwen3.8-27b","community/Catniti/gemini-4-carbon","community/Bakhshi7889/step-5-preview","community/rekty/towers-foundry-legal","community/rekty/towers-prism-media","community/rekty/towers-kite-fulfilment","community/rekty/towers-helios-grid","community/rekty/towers-orbit-education","community/rekty/towers-quill-co","community/rekty/towers-lumen-health","community/rekty/towers-atlas-freight","community/rekty/towers-verdant-analytics","community/rekty/towers-neon-games-studio","community/rekty/towers-sky-brew-labs","community/chigwell/claude-fable-5-2","community/chigwell/kimi-k3.1-pro","community/Catniti/north-mini-code","community/Catniti/command-a-plus","community/patbing/tower-reviewer","community/patbing/tower-writer","community/patbing/tower-researcher","community/Saauf/nemotron-3.5-bolt","community/Saauf/laguna-xs-2.1","community/Saauf/step-5-preview","community/Saauf/nemotron-3.5-lightning","community/Saauf/nemotron-3-ultra","community/Saauf/mistral-large-4","community/Lorodn4x/ps5-beta","community/mhmdrizki803-boop/towers-signal-reports","community/mhmdrizki803-boop/towers-echo-support","community/mhmdrizki803-boop/towers-ledger-owls","community/mhmdrizki803-boop/towers-pixel-bloom","community/mhmdrizki803-boop/towers-nova-outreach","community/mhmdrizki803-boop/towers-byte-foundry","community/mhmdrizki803-boop/towers-hexa-research","community/mhmdrizki803-boop/towers-aurora-copy","community/Marcus-Mok-GH/pt-leasing","community/Marcus-Mok-GH/pt-fieldnote","community/Marcus-Mok-GH/pt-orbit","community/Marcus-Mok-GH/pt-copperline","community/Marcus-Mok-GH/pt-harbor","community/Marcus-Mok-GH/pt-lantern","community/Marcus-Mok-GH/pt-tidepool","community/Marcus-Mok-GH/pt-quietloop","community/Marcus-Mok-GH/pt-emberforge","community/Marcus-Mok-GH/pt-lobby","community/Marcus-Mok-GH/pt-northwind","community/xiaotian1171/atrium-concierge","community/xiaotian1171/atrium-mise-en-place","community/xiaotian1171/atrium-fieldnotes","community/xiaotian1171/atrium-soundpost","community/xiaotian1171/atrium-tinyfactory","community/xiaotian1171/atrium-civic-atlas","community/xiaotian1171/atrium-shelflife","community/xiaotian1171/atrium-papertrail-bio","community/xiaotian1171/atrium-clearclause","community/xiaotian1171/atrium-loop-and-loom","community/xiaotian1171/atrium-northstar-climate","community/Saauf/minimax-m3.1-flash","community/tomdacatto/tower-kitchen-table","community/tomdacatto/tower-patchwork","community/tomdacatto/tower-stillwater","community/tomdacatto/tower-fieldnotes","community/tomdacatto/tower-lumen-repairs","community/tomdacatto/tower-noticeboard","community/tomdacatto/tower-seedbank","community/tomdacatto/tower-tidewatch","community/sharktide/inferenceport-ai-gpt-6-luna","community/YoannDev90/vercel-nemotron-3.5-lightning:free","community/Saauf/grok-4.20-fast","community/Catniti/glm-5.3-flash","community/scriptsnsenses-sys/deepseek-v4.1-flash","community/danhquach/prompt-enhancer","community/danhquach/bug-report-writer","community/chigwell/gemini-4-argon","community/Davizigjojo/blazerrouter","community/chigwell/claude-haiku-5-5","community/Saauf/glm-5.3-flash","community/morriszdweck/glm-5.3-flash-free","community/Saauf/llama3.1-8B:ultrafast","community/chigwell/claude-opus-5-5","community/Derlifed/retail-fastfood-interview-coach","community/samueltargino0567-ux/Gt3","community/sharktide/inferenceport-ai-lightning-text-v2.1","community/chigwell/gpt-6.1-sol","community/vendouple/gpt-6.2-sol:stable","community/Guest453/idea-judge","community/tomdacatto/Qwen3.8-27B-Uncensored","community/vendouple/claude-sonnet-5.5:stable","community/Creatneworld/pen","community/vendouple/claude-opus-5.5:stable","community/vendouple/gpt-6-luna:stable","community/vendouple/gpt-6.1-sol:stable","community/Guest453/show-your-work","community/Catniti/catniti-ai-agent","community/Catniti/agnes-3.0-flash","community/AkshayCoder48/prompt-to-art","community/AkshayCoder48/free-voice","community/AkshayCoder48/free-clips","community/AkshayCoder48/researcher","community/AkshayCoder48/code-pair","community/fadyabohamza-netizen/frugal","community/iotserver24/supercharge","community/aikhusus2025-ctrl/sirius-scorekeeper","community/tomdacatto/gotcha-scout","community/tomdacatto/tiered-health-router","community/afanasevmylife/gazette","community/Creatneworld/lamplighter","community/xiaotian1171/triage-router","community/voodoohop/catgpt-comic","community/afanasevmylife/polyrouter","community/sharktide/3D-agent","community/sharktide/inferenceport-ai-kimi-k2.7-code-deep-logician","community/Creatneworld/sirius-elevator-descent","community/Creatneworld/catgpt-comic","community/scriptsnsenses-sys/glm-5.3-flash-free","community/aikhusus2025-ctrl/sirius-elevator","community/aikhusus2025-ctrl/ember-perch","community/pegalink/hy4-preview-coding","community/pollinations-ai/midijourney","community/Catniti/nemotron-3.5-lightning","community/tomdacatto/llama-3.1-8B","community/MarcosFRG/gemma-4-31b:paid","community/smplstuff/title-generator","community/tomdacatto/qwen-3.8-27B-fast","community/voodoohop/email-overview","community/YoannDev90/qwen3.7-flash","community/MarcosFRG/glm-5.3-flash","community/MarcosFRG/gemma-4-26b-a4b:paid","community/Takax62/minimax-m3-429b-vml","community/sharktide/inferenceport-ai-lightning-text-v2-expanded-knowledge","community/MarcosFRG/qwen3.8-27b:paid","community/MarcosFRG/metraxai","community/gggff123/Inkling","community/gggff123/step-3.7-flash","community/pollinations-ai/polli","community/chirag-gamer/gpt-oss-120b","community/sharktide/inferenceport-ai-gemini-2.5-flash","community/sharktide/inferenceport-ai-lightning-text-v2","community/sharktide/inferenceport-ai-qwen-3.8-27b","community/sharktide/inferenceport-ai-minimax-m3","community/sharktide/inferenceport-ai-kimi-k2.7-code","community/MarcosFRG/minimax-m3:paid","community/MarcosFRG/gemini-3-flash-preview:paid","community/sharktide/inferenceport-ai-mimo-v2.5"],
-image:['flux','zimage','klein','gptimage','qwen-image','gpt-image-2','wan-image','gptimage-large','kontext','seedream','p-image','p-image-edit','grok-imagine','nanobanana','nova-canvas','seedream5','nanobanana-2','grok-imagine-pro','wan-image-pro','nanobanana-pro','seedream-pro']};
+            // Construct full URL, handling trailing slashes
+            const fullUrl = baseUrl.replace(/\/$/, '') + endpoint;
 
-const setStatus=(s,cls='')=>{$('status').textContent=s;$('status').className='status '+cls};
-const modelId=m=>typeof m==='string'?m:(m?.name||m?.id||m?.model||'');
-const extractList=d=>Array.isArray(d)?d:(d&&typeof d==='object'?['models','data','text','image'].map(k=>d[k]).find(Array.isArray)||[]:[]);
-const getMode=()=>document.querySelector('input[name="callMode"]:checked').value;
+            outputDiv.textContent = 'Sending request...';
+            statusDiv.textContent = '';
+            statusDiv.className = 'status';
+            sendBtn.disabled = true;
 
-/* ---------- catalogue ---------- */
-async function loadCatalog(){
-  try{
-    const r=await fetch('https://text.pollinations.ai/models',{headers:{accept:'application/json'}});
-    if(!r.ok)throw Error('HTTP '+r.status);
-    const data=await r.json();
-    let txt=[],img=[];
-    for(const m of extractList(data)){
-      const id=modelId(m);if(!id)continue;
-      const type=(typeof m==='object'?(m.type||m.modality||m.category||''):'').toString().toLowerCase();
-      if(type.includes('image'))img.push(id);else txt.push(id);
-    }
-    if(data&&typeof data==='object'){
-      if(Array.isArray(data.image))img.push(...data.image.map(modelId));
-      if(Array.isArray(data.text))txt.push(...data.text.map(modelId));
-    }
-    catalog.text=[...new Set(txt.filter(Boolean))];
-    catalog.image=[...new Set(img.filter(Boolean))];
-    // Live catalogues are currently restricted to a few anonymous-tier models;
-    // merge in the full known list so the playground still offers everything.
-    catalog.text=[...new Set([...fallback.text,...catalog.text])];
-    catalog.image=[...new Set([...catalog.image,...fallback.image])];
-    setStatus(`Catalogue loaded — ${catalog.text.length} text · ${catalog.image.length} image models (live + known).`,'ok');
-  }catch(e){
-    catalog={...fallback};
-    setStatus(`Live catalogue unavailable (${e.message}) — using built-in list.`,'err');
-  }
-  renderModels();
-}
+            try {
+                // Constructing the request as closely as possible to the image
+                const response = await fetch(fullUrl, {
+                    method: 'POST',
+                    // Note: Host, Connection, Accept-Encoding, Upgrade-Insecure-Requests 
+                    // are forbidden headers and cannot be set via JavaScript.
+                    headers: {
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                        'Accept-Language': 'en-US,en;q=0.5'
+                    }
+                    // The image shows no request body, so we don't send one.
+                });
 
-/* ---------- model list ---------- */
-function currentModels(){return catalog[category]||[]}
-function renderModels(){
-  const q=$('modelSearch').value.trim().toLowerCase();
-  const arr=currentModels().filter(m=>!q||m.toLowerCase().includes(q));
-  const single=getMode()==='single';
-  const sel=selectedSet();
-  const box=$('models');box.replaceChildren();
-  arr.forEach(name=>{
-    const lab=document.createElement('label');lab.className='model';
-    const cb=document.createElement('input');cb.type='checkbox';cb.value=name;
-    cb.checked=single?(sel.has(name)||arr.length===1):sel.has(name);
-/* selection handled by delegated listeners below */
-    const span=document.createElement('span');span.textContent=name;
-    lab.append(cb,span);box.append(lab);
-  });
-  $('modelCount').textContent=`${arr.length} shown · ${selected().length} selected`;
-  update();
-}
-function selectedSet(){return new Set([...document.querySelectorAll('#models input:checked')].map(x=>x.value))}
-function selected(){return [...selectedSet()]}
-function update(){
-  const single=getMode()==='single';
-  const n=selected().length;
-  $('modeHint').textContent=single?(n===1?'✓ 1 model selected':'Select exactly one model'):`${currentModels().length||0} models in catalogue — checked ones will run`;
-  $('modelCount').textContent=`${document.querySelectorAll('#models input').length} shown · ${n} selected`;
-}
-function enforceSelection(t){
-  if(getMode()!=='single'){update();return}
-  const boxes=[...document.querySelectorAll('#models input')];
-  if(t&&t.type==='checkbox'&&t.checked)boxes.forEach(o=>{if(o!==t)o.checked=false});
-  const on=boxes.filter(b=>b.checked);
-  if(!on.length&&boxes.length)boxes[0].checked=true;
-  else if(on.length>1)boxes.forEach(b=>b.checked=(b===on[0]));
-  update();
-}
-$('models').addEventListener('click',e=>{const cb=e.target.closest('input[type=checkbox]');if(cb)setTimeout(()=>enforceSelection(cb),0)});
-$('models').addEventListener('change',e=>{if(e.target.type==='checkbox')enforceSelection(e.target)});
-$('modelSearch').addEventListener('input',renderModels);
-$('selectAll').addEventListener('click',()=>{document.querySelectorAll('#models input').forEach(c=>c.checked=true);update()});
-$('selectNone').addEventListener('click',()=>{document.querySelectorAll('#models input').forEach(c=>c.checked=false);update()});
-document.querySelectorAll('input[name="callMode"]').forEach(r=>r.addEventListener('change',()=>{
-  if(getMode()==='single'){
-    // In single mode keep at most one checked; if multiple are checked keep only the first.
-    const boxes=[...document.querySelectorAll('#models input')];const checked=boxes.filter(b=>b.checked);
-    if(checked.length>1)boxes.forEach(b=>b.checked=(b===checked[0]));
-    if(!checked.length&&boxes.length)boxes[0].checked=true;
-  }
-  update();
-}));
+                // Get the raw text response
+                const responseText = await response.text();
 
-/* ---------- tabs ---------- */
-function syncCategory(){
-  const isImg=category==='image';
-  $('systemWrap').classList.toggle('hidden',isImg);
-  $('imageOptions').classList.toggle('hidden',!isImg);
-  $('maxTokensWrap').classList.toggle('hidden',isImg);
-  $('prompt').placeholder=isImg?'Describe the image you want to create…':'Write your prompt…';
-  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.category===category));
-  renderModels();
-}
-document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{if(busy)return;category=b.dataset.category;syncCategory()}));
+                // Build the raw output (Status line + headers + body)
+                let rawOutput = `HTTP Status: ${response.status} ${response.statusText}\n\n`;
+                
+                rawOutput += `--- Response Headers ---\n`;
+                response.headers.forEach((value, key) => {
+                    rawOutput += `${key}: ${value}\n`;
+                });
+                
+                rawOutput += `\n--- Response Body ---\n`;
+                rawOutput += responseText;
 
-/* ---------- API calls (POST) ---------- */
-function parseBody(raw){
-  try{const j=JSON.parse(raw);
-    if(typeof j==='string')return j;                       // some models return JSON-encoded text
-    if(j?.choices?.[0]?.message?.content)return j.choices[0].message.content;
-    if(typeof j?.content==='string')return j.content;
-    return JSON.stringify(j,null,2);
-  }catch{return raw}
-}
-async function textCall(model,prompt,system){
-  const messages=[];if(system)messages.push({role:'system',content:system});
-  messages.push({role:'user',content:prompt});
-  const res=await fetch('https://text.pollinations.ai/',{method:'POST',
-    headers:{'Content-Type':'application/json','Accept':'application/json'},
-    body:JSON.stringify({messages,model,stream:false,max_tokens:Math.max(1,Number($('maxTokens').value)||1024)})});
-  const raw=await res.text();
-  if(!res.ok)throw Error(`HTTP ${res.status} ${res.statusText}\n${parseBody(raw)}`);
-  return parseBody(raw)||'(empty response)';
-}
-async function imageCall(model,prompt){
-  const [w,h]=$('imageSize').value.split('x').map(Number);
-  const res=await fetch('https://image.pollinations.ai/',{method:'POST',
-    headers:{'Content-Type':'application/json','Accept':'image/*'},
-    body:JSON.stringify({prompt,model,width:w,height:h,n:1})});
-  if(!res.ok){const t=await res.text();throw Error(`HTTP ${res.status} ${res.statusText}\n${t.slice(0,400)}`)}
-  const blob=await res.blob();
-  if(!blob.type.startsWith('image/'))throw Error('Expected an image response, got '+blob.type);
-  return blob;
-}
+                // Update UI
+                outputDiv.textContent = rawOutput;
+                statusDiv.textContent = `Request completed with status ${response.status}`;
+                statusDiv.classList.add(response.ok ? 'success' : 'error');
 
-/* ---------- results ---------- */
-function addCard(model){
-  const card=document.createElement('article');card.className='result';
-  const head=document.createElement('div');head.className='resultHead';
-  const h=document.createElement('h3');h.textContent=model;
-  const badge=document.createElement('span');badge.className='badge';badge.textContent='Queued';
-  head.append(h,badge);
-  const body=document.createElement('pre');body.textContent='Waiting…';
-  card.append(head,body);$('results').prepend(card);
-  return{card,badge,body};
-}
-async function runOne(model,prompt,system){
-  const ui=addCard(model);ui.badge.textContent='Running';
-  try{
-    if(category==='text'){
-      ui.body.textContent=await textCall(model,prompt,system);
-    }else{
-      const blob=await imageCall(model,prompt);
-      const img=document.createElement('img');img.alt='Generated by '+model;img.src=URL.createObjectURL(blob);
-      ui.body.replaceWith(img);
-      const p=document.createElement('p');
-      const a=document.createElement('a');a.href=img.src;a.download=model.replace(/[^a-z0-9_-]/gi,'_')+'.png';a.textContent='⬇ Download image';
-      p.append(a);ui.card.append(p);
-    }
-    ui.badge.textContent='Complete';ui.badge.className='badge ok';
-  }catch(e){
-    ui.body.textContent=`Request failed: ${e.message}\n\n(Check the model name, service limits, or browser CORS.)`;
-    ui.badge.textContent='Failed';ui.badge.className='badge err';
-  }
-}
-
-/* ---------- run ---------- */
-function setBusy(b){busy=b;$('run').disabled=b;$('clear').disabled=b;$('stop').hidden=!b;$('modelSearch').disabled=b;document.querySelectorAll('input[name="callMode"]').forEach(r=>r.disabled=b)}
-$('stop').addEventListener('click',()=>{stopFlag=true;setStatus('Stopping after in-flight requests…')});
-async function run(){
-  if(busy)return;
-  const prompt=$('prompt').value.trim();
-  if(!prompt){setStatus('Enter a prompt first.','err');return}
-  let models=selected();
-  if(getMode()==='single'){
-    if(models.length>1){const keep=models[0];document.querySelectorAll('#models input').forEach(c=>c.checked=(c.value===keep));models=[keep]}
-    if(models.length!==1){setStatus('Single mode: pick exactly one model.','err');return}
-  }else if(!models.length){models=[...currentModels()]}
-  if(!models.length){setStatus('No models available.','err');return}
-  stopFlag=false;setBusy(true);
-  $('results').replaceChildren();$('resultSummary').textContent=`0 / ${models.length} finished`;
-  setStatus(`Calling ${models.length} ${category} model${models.length===1?'':'s'}…`);
-  let next=0,done=0;
-  const workers=Array.from({length:Math.min(5,models.length)},async()=>{
-    while(next<models.length&&!stopFlag){
-      const model=models[next++];
-      await runOne(model,prompt,$('system').value.trim());
-      $('resultSummary').textContent=`${++done} / ${models.length} finished`;
-    }
-  });
-  await Promise.all(workers);
-  setBusy(false);update();
-  setStatus(stopFlag?`Stopped — ${done}/${models.length} completed.`:`Finished ${models.length} request${models.length===1?'':'s'}.`,stopFlag?'err':'ok');
-}
-$('run').addEventListener('click',run);
-$('clear').addEventListener('click',()=>{$('results').replaceChildren();$('resultSummary').textContent='';setStatus('Ready')});
-
-syncCategory();loadCatalog();
-})();
-</script></body></html>"""
+            } catch (error) {
+                // Handle Network / CORS errors
+                outputDiv.textContent = `Error: ${error.message}\n\nThis is likely due to a CORS (Cross-Origin Resource Sharing) policy, a network error, or an invalid URL.\nBrowsers block requests to servers that do not explicitly allow cross-origin requests.`;
+                statusDiv.textContent = 'Request Failed';
+                statusDiv.classList.add('error');
+                console.error('Fetch Error:', error);
+            } finally {
+                sendBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>"""
 
 
 @app.route('/')
